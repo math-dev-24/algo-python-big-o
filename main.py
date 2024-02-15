@@ -22,12 +22,12 @@
 class Node:
     def __init__(self, data: str | int):
         self.data = data
-        self.next, self.prev = None, None
+        self.next = self.prev = None
 
 
 class Llist:
     def __init__(self):
-        self.head, self.tail = None, None
+        self.head = self.tail = None
         self.length = 0
 
     def __str__(self):
@@ -35,9 +35,9 @@ class Llist:
         current = self.head
         elements = []
         while current:
-            elements.append(repr(current.data))
+            elements.append(current.data)
             current = current.next
-        return "[" + ", ".join(elements) + "]"
+        return f"{elements}"
 
     def __len__(self) -> int:
         # Indice O(1)
@@ -158,23 +158,15 @@ class Llist:
 
     def contains(self, data: str | int) -> bool:
         # Dépendant de index_of - > indice O(n)
-        if self.index_of(data) != -1:
-            return True
-        else:
-            return False
+        return self.index_of(data) != -1
 
     def reversed(self):
-        if not self.tail:
-            return
+        # indice o(n)
         current = self.head
-        prev = None
         while current:
-            next_node = current.next
-            current.next = prev
-            prev = current
-            current = next_node
-        self.head = prev
-        self.tail = current
+            current.prev, current.next = current.next, current.prev
+            current = current.prev
+        self.head, self.tail = self.tail, self.head
 
 
 if __name__ == '__main__':
@@ -212,3 +204,8 @@ if __name__ == '__main__':
     print(llist) # -> [50, 10, 30, 50, 20, 100, "test"]
     llist.reversed()
     print(llist) # -> ["test", 100, 20, 50, 30, 10, 50]
+
+    print(llist.head.data) # -> "test"
+    print(llist.tail.data) # ->  50
+
+    print(len(llist)) # -> 7
