@@ -7,7 +7,7 @@
 - (Renseignez vous aussi sur les différences de performance entre une liste chaînée simple et double).
 
 
-###Précisions sur les fonctions à développer :
+### Précisions sur les fonctions à développer :
 
 - (OK) print(llist)-> str affiche la chaîne de caractères pour représenter le contenu de la liste
 - (OK) append(value:int|str)-> None permet d'ajouter un élément à la fin de la liste
