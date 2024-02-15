@@ -20,3 +20,40 @@
 - (OK) remove_at(index:int)-> None retire un élément à l'index donné
 - (OK) reversed()-> None inverse le sens de la liste chaînée
 - (OK) llist.lenght() / len(llist)-> int renvoie le nombre d'éléments contenus dans la liste chaînée, passée en argument
+
+### Test à faire :
+
+llist = Llist()
+print(llist) # -> []
+
+llist.append(3)
+llist.append(10)
+llist.append(30)
+print(len(llist)) # -> 3
+print(llist) # -> [3, 10, 30]
+
+llist.insert(1, 50)
+print(llist) # -> [3, 50, 10, 30]
+
+llist.remove_at(0)
+print(llist) # -> [50, 10, 30]
+
+print(llist.contains(10)) # -> True
+print(llist.contains(87)) # -> False
+
+print(llist.index_of(10)) # -> 1
+print(llist.index_of(87)) # -> -1
+
+print(llist.at_index(1)) # -> 10
+
+print(llist.is_unique()) # -> True
+llist.append(50)
+print(llist) # -> [50, 10, 30, 50]
+print(llist.is_unique()) # -> False
+
+llist.append(20)
+llist.append(100)
+llist.append("test")
+print(llist) # -> [50, 10, 30, 50, 20, 100, "test"]
+llist.reversed()
+print(llist) # -> ["test", 100, 20, 50, 30, 10, 50]
