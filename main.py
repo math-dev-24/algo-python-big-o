@@ -19,42 +19,35 @@
 # (OK) reversed()-> None inverse le sens de la liste chaînée
 # (OK) llist.lenght() / len(llist)-> int renvoie le nombre d'éléments contenus dans la liste chaînée, passée en argument
 
-
 class Node:
-    def __init__(self, data):
+    def __init__(self, data: str | int):
         self.data = data
-        self.next = None
-        self.prev = None
+        self.next, self.prev = None, None
 
 
 class Llist:
     def __init__(self):
-        self.head = None
-        self.tail = None
+        self.head, self.tail = None, None
+        self.length = 0
 
-    def __str__(self) -> str:
+    def __str__(self):
+        # Indice O(n)
         current = self.head
-        list_node_data: str = ''
+        elements = []
         while current:
-            list_node_data += current.data
+            elements.append(repr(current.data))
             current = current.next
-            if current:
-                list_node_data += ", "
-        return f"[{list_node_data}]"
+        return "[" + ", ".join(elements) + "]"
 
-    def length(self) -> int:
-        # Plus il y a de Node + le nombre de calcul augmente -> je pense O(n) -> parce que l'on boucle sur chaque node
-        current = self.head
-        count = 0
-        while current:
-            current = current.next
-            count += 1
-        return count
+    def __len__(self) -> int:
+        # Indice O(1)
+        return self.length
 
-    def append(self, data) -> None:
+    def append(self, data: str | int) -> None:
         # indice BigO = O(1)
         new_node: Node = Node(data)
-        if self.head is None:
+        self.length += 1
+        if not self.head:
             self.head = new_node
             self.tail = new_node
         else:
@@ -62,10 +55,11 @@ class Llist:
             self.tail.next = new_node
             self.tail = new_node
 
-    def prepend(self, data) -> None:
+    def prepend(self, data: str | int) -> None:
         # indice BigO = O(1)
         new_node: Node = Node(data)
-        if self.head is None:
+        self.length += 1
+        if not self.head:
             self.head = new_node
             self.tail = new_node
         else:
@@ -73,9 +67,9 @@ class Llist:
             self.head.prev = new_node
             self.head = new_node
 
-    def insert(self, index, data) -> None:
-        # indice O(1) -> j'utilise get_node_with_index qui est o(n) -> donc o(n)
-        max_index: int = self.length()
+    def insert(self, index: int, data: str | int) -> None:
+        # j'utilise get_node_with_index et len qui est o(n) -> donc o(n)
+        max_index: int = len(self)
         if index < 0:
             raise ValueError('Index ne peu pas être inférieur à 0')
         if index > max_index:
@@ -97,10 +91,11 @@ class Llist:
             new_node.next = next_node
             # ___
             next_node.prev = new_node
+        self.length += 1
 
     def remove_at(self, index: int) -> None:
         # indice O(1) -> mais j'utilise get_node_with_index qui est O(n) -> donc O(n)
-        max_index = self.length() - 1
+        max_index = len(self) - 1
         if index < 0:
             raise ValueError('Index ne peu pas être inférieur à 0')
         if index > max_index:
@@ -117,12 +112,13 @@ class Llist:
             next_current: Node = current.next
             prev_current.next = next_current
             next_current.prev = prev_current
+        self.length -= 1
 
     def at_index(self, index: int) -> str:
         # indice : O(n) dépendant de get_node_with_index
         return self.get_node_with_index(index).data
 
-    def index_of(self, data: str) -> int:
+    def index_of(self, data: str | int) -> int:
         # indice : O(n)
         if not self.head:
             return -1
@@ -160,18 +156,9 @@ class Llist:
             current_node = current_node.next
         return True
 
-    def contains(self, data) -> bool:
-        # indice O(n)
-        if not self.head:
-            return False
-        seen_data = set()
-        current_node = self.head
-
-        while current_node:
-            seen_data.add(current_node.data)
-            current_node = current_node.next
-
-        if data in seen_data:
+    def contains(self, data: str | int) -> bool:
+        # Dépendant de index_of - > indice O(n)
+        if self.index_of(data) != -1:
             return True
         else:
             return False
@@ -181,7 +168,6 @@ class Llist:
             return
         current = self.head
         prev = None
-
         while current:
             next_node = current.next
             current.next = prev
@@ -193,33 +179,36 @@ class Llist:
 
 if __name__ == '__main__':
     llist = Llist()
-    print(llist)
-    llist.append("10")
-    llist.append("sss")
-    llist.append("test")
-    print(llist)  # Affiche [10, sss, test]
-    print('________________')
-    llist.prepend("15")
-    print(llist)  # Affiche [1, 10, sss, test]
-    print('________________')
-    llist.insert(0, "add index 0")
-    llist.insert(3, "add index 3")
-    print(llist)  # Affiche [add index 0, 1, 10, add index 3, sss, test]
-    print('________________')
-    index_needed = 2
-    print(f"A l'index {index_needed} il y a {llist.at_index(index_needed)}")  # Affiche sss
-    value_needed = "10"
-    print(f"L'index de {value_needed} est {llist.index_of(value_needed)}")  # Affiche 2
-    print(f"Ils sont tous unique ? {llist.is_unique()}")  # Affiche true
-    print(f"101 en fait partie ? {llist.contains('101')}")  # Affiche False
-    print('________________')
-    print(llist)
+    print(llist) # -> []
+
+    llist.append(3)
+    llist.append(10)
+    llist.append(30)
+    print(len(llist)) # -> 3
+    print(llist) # -> [3, 10, 30]
+
+    llist.insert(1, 50)
+    print(llist) # -> [3, 50, 10, 30]
+
     llist.remove_at(0)
-    print(f"remove first element : {llist}")
-    llist.remove_at(llist.length() - 1)
-    print(f"remove last element : {llist}")
-    llist.remove_at(2)
-    print(f"remove index 2 : {llist}")
-    print('________________')
+    print(llist)#  -> [50, 10, 30]
+
+    print(llist.contains(10)) # -> True
+    print(llist.contains(87)) # -> False
+
+    print(llist.index_of(10)) # -> 1
+    print(llist.index_of(87)) # -> -1
+
+    print(llist.at_index(1)) # -> 10
+
+    print(llist.is_unique()) # -> True
+    llist.append(50)
+    print(llist) # -> [50, 10, 30, 50]
+    print(llist.is_unique()) # -> False
+
+    llist.append(20)
+    llist.append(100)
+    llist.append("test")
+    print(llist) # -> [50, 10, 30, 50, 20, 100, "test"]
     llist.reversed()
-    print(f"Liste inversé : {llist}")
+    print(llist) # -> ["test", 100, 20, 50, 30, 10, 50]
